@@ -95,7 +95,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
 // user logOut ✅
 const logOut = asyncHandler(async (req, res) => {
-  console.log(req.user);
+  console.log(req.user)
   User.findByIdAndUpdate(
     req.user?._id,
     {
@@ -118,7 +118,7 @@ const logOut = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "user logged Out"))
 })
 
-// update avatar image
+// update avatar image ✅
 const updateAvatar = asyncHandler(async (req, res) => {
   const avatarLocalPath = req.file?.path
   if (!avatarLocalPath) {
@@ -142,4 +142,38 @@ const updateAvatar = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, user, "Avatar image is updated successfully"))
 })
-export { registerUser, loginUser, logOut,updateAvatar }
+//get user details ✅
+const getProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user?._id).select(
+    "-password -refreshToken"
+  )
+  if (!user) {
+    throw new ApiError(400, "No such user exists!")
+  }
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, "Successfully fetched the profile!"))
+})
+
+//change user password ✅
+const changePassword = asyncHandler(async (req, res) => {
+  const { oldPassword, newPassword } = req.body
+  const user = await User.findById(req.user?._id)
+  const isPasswordCorrect = await user.isPasswordCorrect(oldPassword)
+  if (!isPasswordCorrect) {
+    throw new ApiError(401, "Incorrect current Password")
+  }
+  user.password = newPassword
+  await user.save({ validateBeforeSave: false })
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "password changed successfully"))
+})
+export {
+  registerUser,
+  loginUser,
+  logOut,
+  updateAvatar,
+  getProfile,
+  changePassword,
+}
