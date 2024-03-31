@@ -1,6 +1,7 @@
 import { User } from "../models/user.model.js"
 import { ApiError } from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
+import { uploadOnCloudinary } from "../utils/Cloudinary.js"
 import { asyncHandler } from "../utils/asyncHandler.js"
 
 const generateAccessAndRefreshTokens = async (userId) => {
@@ -92,8 +93,9 @@ const loginUser = asyncHandler(async (req, res) => {
     )
 })
 
-// user logOut
+// user logOut ✅
 const logOut = asyncHandler(async (req, res) => {
+  console.log(req.user);
   User.findByIdAndUpdate(
     req.user?._id,
     {
@@ -115,4 +117,29 @@ const logOut = asyncHandler(async (req, res) => {
     .clearCookie("refreshToken", options)
     .json(new ApiResponse(200, {}, "user logged Out"))
 })
-export { registerUser, loginUser, logOut }
+
+// update avatar image
+const updateAvatar = asyncHandler(async (req, res) => {
+  const avatarLocalPath = req.file?.path
+  if (!avatarLocalPath) {
+    throw new ApiError(400, "Avatar file is missing")
+  }
+  const avatar = await uploadOnCloudinary(avatarLocalPath)
+
+  if (!avatar.url) {
+    throw new ApiError(400, "Error while uploading avatar")
+  }
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $set: {
+        avatar: avatar.url,
+      },
+    },
+    { new: true }
+  ).select("-password -refreshToken")
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, "Avatar image is updated successfully"))
+})
+export { registerUser, loginUser, logOut,updateAvatar }
