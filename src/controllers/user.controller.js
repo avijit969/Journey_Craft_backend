@@ -169,6 +169,22 @@ const changePassword = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, {}, "password changed successfully"))
 })
+// update  user info ✅
+const updateUserInfo = asyncHandler(async (req, res) => {
+  const { email, fullName } = req.body
+  let user = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $set: {
+        email,
+        fullName,
+      },
+    },
+    { new: true }
+  ).select("-password")
+  res.status(200).json(new ApiResponse(200, user, "Updated Successfully"))
+})
+
 export {
   registerUser,
   loginUser,
@@ -176,4 +192,5 @@ export {
   updateAvatar,
   getProfile,
   changePassword,
+  updateUserInfo,
 }
