@@ -78,6 +78,9 @@ const loginAdmin = asyncHandler(async (req, res) => {
     const options = {
       httpOnly: true,
       secure: true,
+      magAge: 60 * 60 * 1000,
+      sameSite: "None",
+      domain: "https://journeycraft1.netlify.app",
     }
     return res
       .status(200)
@@ -113,6 +116,9 @@ const AdminLogOut = asyncHandler(async (req, res) => {
     const options = {
       httpOnly: true,
       secure: true,
+      magAge: 60 * 60 * 1000,
+      sameSite: "None",
+      domain: "https://journeycraft1.netlify.app",
     }
     return res
       .status(200)

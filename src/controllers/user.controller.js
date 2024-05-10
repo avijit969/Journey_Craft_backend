@@ -75,6 +75,9 @@ const loginUser = asyncHandler(async (req, res) => {
   const options = {
     httpOnly: true,
     secure: true,
+    magAge: 60 * 60 * 1000,
+    sameSite: "None",
+    domain: "https://journeycraft1.netlify.app",
   }
   return res
     .status(200)
@@ -92,14 +95,13 @@ const loginUser = asyncHandler(async (req, res) => {
       )
     )
 })
-// is logged in 
-const isLoggedIn= asyncHandler(async(req,res)=>{
+// is logged in
+const isLoggedIn = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user?._id)
-  if(user){
-    res.json({isLoggedIn:true,user})
-  }
-  else{
-    res.json({isLoggedIn:false})
+  if (user) {
+    res.json({ isLoggedIn: true, user })
+  } else {
+    res.json({ isLoggedIn: false })
   }
 })
 
@@ -119,6 +121,9 @@ const logOut = asyncHandler(async (req, res) => {
   const options = {
     httpOnly: true,
     secure: true,
+    magAge: 60 * 60 * 1000,
+    sameSite: "None",
+    domain: "https://journeycraft1.netlify.app",
   }
   return res
     .status(200)
@@ -126,7 +131,6 @@ const logOut = asyncHandler(async (req, res) => {
     .clearCookie("refreshToken", options)
     .json(new ApiResponse(200, {}, "user logged Out"))
 })
-
 
 // update avatar image ✅
 const updateAvatar = asyncHandler(async (req, res) => {
@@ -203,5 +207,5 @@ export {
   getProfile,
   changePassword,
   updateUserInfo,
-  isLoggedIn
+  isLoggedIn,
 }
