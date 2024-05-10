@@ -35,7 +35,7 @@ const registerUser = asyncHandler(async (req, res) => {
     $or: [{ username }, { email }],
   })
   if (existedUser) {
-    throw new ApiError(409, "User with email or username already exists")
+    throw new ApiError(401, "User with email or username already exists")
   }
   const user = await User.create({
     email,
@@ -63,7 +63,7 @@ const loginUser = asyncHandler(async (req, res) => {
   }
   const isPAsswordCorrect = await user.isPasswordCorrect(password)
   if (!isPAsswordCorrect) {
-    throw new ApiError(788, "invalid user credentials")
+    throw new ApiError(402, "invalid user credentials")
   }
 
   const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
@@ -92,10 +92,19 @@ const loginUser = asyncHandler(async (req, res) => {
       )
     )
 })
+// is logged in 
+const isLoggedIn= asyncHandler(async(req,res)=>{
+  const user = await User.findById(req.user?._id)
+  if(user){
+    res.json({isLoggedIn:true,user})
+  }
+  else{
+    res.json({isLoggedIn:false})
+  }
+})
 
 // user logOut ✅
 const logOut = asyncHandler(async (req, res) => {
-  console.log(req.user)
   User.findByIdAndUpdate(
     req.user?._id,
     {
@@ -117,6 +126,7 @@ const logOut = asyncHandler(async (req, res) => {
     .clearCookie("refreshToken", options)
     .json(new ApiResponse(200, {}, "user logged Out"))
 })
+
 
 // update avatar image ✅
 const updateAvatar = asyncHandler(async (req, res) => {
@@ -193,4 +203,5 @@ export {
   getProfile,
   changePassword,
   updateUserInfo,
+  isLoggedIn
 }

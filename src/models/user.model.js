@@ -18,6 +18,15 @@ const userSchema = new Schema(
       lowercase: true,
       trim: true,
     },
+    isAdmin:{
+      type:Boolean,
+      default:false
+    },
+    adminType:{
+      type:String,
+      Enum:['SupperAdmin','hotelAdmin','busAdmin','cabAdmin','user'],
+      default:"user"
+    },
     fullName: {
       type: String,
       require: true,
@@ -27,6 +36,7 @@ const userSchema = new Schema(
     avatar: {
       type: String, // cloudinary url
     //   required: true,
+    default:"https://img.freepik.com/free-vector/isolated-young-handsome-man-different-poses-white-background-illustration_632498-854.jpg?w=900&t=st=1714227599~exp=1714228199~hmac=3c7441e3d076b9d93e4c6acfaf17ff113290eef786ad9f1f61316ed7df630919"
     },
     password: {
       type: String,
@@ -35,6 +45,7 @@ const userSchema = new Schema(
     refreshToken: {
       type: String,
     },
+
   },
   {
     timestamps: true, // createdAt

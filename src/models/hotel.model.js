@@ -44,6 +44,9 @@ const HotelSchema = new Schema(
         timestamp: { type: Date, default: Date.now },
       },
     ],
+    owner: {
+      type:Schema.Types.ObjectId,ref:"User"
+    }
   },
   { timestamps: true }
 )

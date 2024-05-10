@@ -29,6 +29,7 @@ const createHotel = asyncHandler(async (req, res) => {
     description,
     facilities,
     roomTypes,
+    owner: req.user._id,
   })
   return res
     .status(201)
@@ -64,6 +65,7 @@ const updateHotelImage = asyncHandler(async (req, res) => {
 const getHotelByName = asyncHandler(async (req, res) => {
   const { hotelName } = req.body
   const hotel = await Hotel.findOne({ name: hotelName })
+  
   if (!hotel) {
     throw new ApiError(401, "hotel not found")
   }
@@ -71,4 +73,18 @@ const getHotelByName = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, hotel, "successfully got the hotel information"))
 })
-export { createHotel, updateHotelImage,getHotelByName }
+
+//get all hotels
+const getAllHotel = asyncHandler(async (req, res) => {
+  const { hotelName } = req.body
+  const hotel = await Hotel.find()
+  
+  if (!hotel) {
+    throw new ApiError(401, "hotel not found")
+  }
+  return res
+    .status(200)
+    .json(new ApiResponse(200, hotel, "successfully got all the hotel information"))
+})
+
+export { createHotel, updateHotelImage,getHotelByName,getAllHotel }

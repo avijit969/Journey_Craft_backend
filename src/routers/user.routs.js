@@ -2,6 +2,7 @@ import { Router } from "express"
 import {
   changePassword,
   getProfile,
+  isLoggedIn,
   logOut,
   loginUser,
   registerUser,
@@ -13,6 +14,7 @@ import { upload } from "../middlewares/multer.middeleware.js"
 const router = Router()
 router.route("/registerUser").post(registerUser)
 router.route("/login").post(loginUser)
+router.route("/isLoggedIn").get(verifyJWT,isLoggedIn)
 router.route("/logout").post(verifyJWT, logOut)
 router.route("/avatar").patch(verifyJWT, upload.single("avatar"), updateAvatar)
 router.route("/profile").get(verifyJWT, getProfile)
