@@ -87,4 +87,8 @@ const getAllHotel = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, hotel, "successfully got all the hotel information"))
 })
 
+const test =asyncHandler(async(req,res)=>{
+  return res.status(200).json('test for git')
+})
+
 export { createHotel, updateHotelImage,getHotelByName,getAllHotel }
